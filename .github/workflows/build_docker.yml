@@ -1,0 +1,26 @@
+on: [push]
+
+name: Build Docker images
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build latest
+        uses: philips-software/docker-ci-scripts@v4.5.1
+        with:
+          dockerfile: .
+          image-name: rba
+          tags: latest 0 0.1
+          sign: true
+          slsa-provenance: true
+          sbom: true
+        env:
+          REGISTRY_USERNAME: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_URL: ghcr.io/jeroenknoops
+          COSIGN_PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
+          COSIGN_PASSWORD: '${{ secrets.COSIGN_PASSWORD }}'
+          COSIGN_PUBLIC_KEY: '${{ secrets.COSIGN_PUBLIC_KEY }}'
